@@ -7,5 +7,7 @@
     <string name="message">Your locations setting is not enabled. Please enabled it in settings menu.</string>
     <string name="settings">Location Settings</string>
     <string name="cancel">Cancel</string>
-    <string name="key">AIzaSyBnk9KVptIvESwmX7bTPHtwIK86MrZSOzY</string>
+
+    <string name="key"><!--PLACE API KEY HERE--></string>
+
 </resources>
