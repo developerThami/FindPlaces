@@ -30,7 +30,7 @@ class PhotosActivity : AppCompatActivity(), PhotoAdapter.OnImageSelectListener, 
         tag = if (intent.hasExtra(Intent.EXTRA_TEXT)) intent.getStringExtra(Intent.EXTRA_TEXT) else tag
 
         val presenter = PlacesPresenter()
-        presenter.getPlacePhotos(tag, this)
+        presenter.getPlacePhotos(getString(R.string.key) ,tag, this)
 
     }
 
@@ -56,10 +56,6 @@ class PhotosActivity : AppCompatActivity(), PhotoAdapter.OnImageSelectListener, 
 
         progress!!.visibility = View.INVISIBLE
         recyclerView!!.setHasFixedSize(true)
-//
-//        val sGridLayoutManager = StaggeredGridLayoutManager(2,
-//                StaggeredGridLayoutManager.VERTICAL)
-//        recyclerView.layoutManager = sGridLayoutManager
 
         val layoutManager = GridLayoutManager(this, 2)
         recyclerView!!.layoutManager = layoutManager

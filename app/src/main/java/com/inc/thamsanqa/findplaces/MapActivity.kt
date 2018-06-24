@@ -1,6 +1,7 @@
 package com.inc.thamsanqa.findplaces
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,9 +10,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.ContextCompat
-import android.util.Log
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -24,12 +23,15 @@ import com.inc.thamsanqa.findplaces.model.Place
 import com.inc.thamsanqa.findplaces.ui.PlacesContract
 import com.inc.thamsanqa.findplaces.ui.PlacesPresenter
 
-class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.PlacesView {
+import android.provider.Settings
+import android.support.v7.app.AlertDialog
 
+
+class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.PlacesView {
 
     private lateinit var mMap: GoogleMap
     private lateinit var presenter: PlacesPresenter
-    lateinit var locationManager:LocationManager
+    lateinit var locationManager: LocationManager
     private val locationRequestCode: Int = 200
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +43,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
 
         presenter = PlacesPresenter()
 
-         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -116,17 +118,31 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
                 }
 
                 override fun onProviderDisabled(provider: String) {
-
-
+                    showDialog()
                 }
             }
+
+    private fun showDialog() {
+        val alertDialog = AlertDialog.Builder(this@MapActivity)
+        alertDialog.setTitle(getString(R.string.enable))
+        alertDialog.setMessage(getString(R.string.message))
+        alertDialog.setPositiveButton(getString(R.string.settings), { _, _ ->
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(intent)
+        })
+        alertDialog.setNegativeButton(getString(R.string.cancel), { dialog, _ -> dialog.cancel() })
+        val alert = alertDialog.create()
+        alert.show()
+    }
 
     private fun switchOffLocationListener() {
         locationManager.removeUpdates(locationListener)
     }
 
+    @SuppressLint("MissingPermission")
     private fun getUserLocation() {
-        presenter.requestUserLocation(this, locationManager ,locationListener)
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                20, 0.0f, locationListener)
     }
 
     private fun getNearPlaces(location: Location) {
@@ -134,7 +150,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
         val latitude = location.latitude
         val longitude = location.longitude
 
-        val userLocation = String.format("%s,%s", latitude,longitude)
-        presenter.getNearByPlaces("-33.8670522,151.1957362", this)
+        val userLocation = String.format("%s,%s", latitude, longitude)
+        presenter.getNearByPlaces(getString(R.string.key) ,userLocation, this)
     }
 }

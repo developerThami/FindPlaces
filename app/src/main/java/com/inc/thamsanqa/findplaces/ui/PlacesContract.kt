@@ -10,9 +10,8 @@ interface PlacesContract {
 
     interface Presenter {
         fun requestLocationPermission(context: Context)
-        fun requestUserLocation( context: Context, locationManager: LocationManager,locationListener: LocationListener)
-        fun getNearByPlaces(location: String,view: PlacesView)
-        fun getPlacePhotos(placeId: String, view: PhotosView)
+        fun getNearByPlaces(key: String, location: String, view: PlacesView)
+        fun getPlacePhotos(key: String, placeId: String, view: PhotosView)
     }
 
     interface PlacesView {

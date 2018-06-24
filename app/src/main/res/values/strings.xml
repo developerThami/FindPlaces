@@ -3,4 +3,9 @@
     <string name="title_activity_map">Places</string>
     <string name="click_message">Tap here for Photos</string>
     <string name="no_photos">No photos available for this place</string>
+    <string name="enable">Enable Location</string>
+    <string name="message">Your locations setting is not enabled. Please enabled it in settings menu.</string>
+    <string name="settings">Location Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="key">AIzaSyBnk9KVptIvESwmX7bTPHtwIK86MrZSOzY</string>
 </resources>

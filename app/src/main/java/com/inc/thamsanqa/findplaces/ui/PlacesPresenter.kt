@@ -21,20 +21,15 @@ class PlacesPresenter : PlacesContract.Presenter {
                 locationRequestCode)
     }
 
-    @SuppressLint("MissingPermission")
-    override fun requestUserLocation(context: Context, locationManager: LocationManager, locationListener: LocationListener) {
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, locationListener)
-    }
-
-    override fun getNearByPlaces(location: String, listener: PlacesContract.PlacesView) {
+    override fun getNearByPlaces(key: String, location: String, listener: PlacesContract.PlacesView) {
         Thread {
-            PlacesEndPoint().getNearByPlaces("AIzaSyBnk9KVptIvESwmX7bTPHtwIK86MrZSOzY", location, listener)
+            PlacesEndPoint().getNearByPlaces(key, location, listener)
         }.start()
     }
 
-    override fun getPlacePhotos(placeId: String, listener: PlacesContract.PhotosView) {
+    override fun getPlacePhotos(key: String, placeId: String, listener: PlacesContract.PhotosView) {
         Thread {
-            PlacesEndPoint().getPlacePhotos("AIzaSyBnk9KVptIvESwmX7bTPHtwIK86MrZSOzY", placeId, listener)
+            PlacesEndPoint().getPlacePhotos(key, placeId, listener)
         }.start()
     }
 
