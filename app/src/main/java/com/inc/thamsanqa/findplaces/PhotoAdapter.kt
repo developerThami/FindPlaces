@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable
 import com.squareup.picasso.Target
 import java.util.ArrayList
 
+
 class PhotoAdapter internal constructor(private val photos: List<Photo>, private val listener: OnImageSelectListener) : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
 
     private var context: Context? = null
@@ -54,7 +55,6 @@ class PhotoAdapter internal constructor(private val photos: List<Photo>, private
                 override fun onBitmapFailed(errorDrawable: Drawable?) {}
 
                 override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                    imageView.setImageBitmap(bitmap)
                     images.add(bitmap!!)
                 }
             }
@@ -63,6 +63,10 @@ class PhotoAdapter internal constructor(private val photos: List<Photo>, private
                     .load(imageUrl)
                     .into(target)
 
+            Picasso.with(context)
+                    .load(imageUrl)
+                    .fit()
+                    .into(imageView)
         }
 
         private fun buildImageURL(photo: Photo): String {

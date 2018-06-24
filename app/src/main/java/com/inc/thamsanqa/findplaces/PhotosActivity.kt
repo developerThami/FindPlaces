@@ -6,20 +6,26 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.GridLayoutManager
-import android.view.View
 
 import com.inc.thamsanqa.findplaces.model.Photo
 import com.inc.thamsanqa.findplaces.ui.PlacesContract
 import com.inc.thamsanqa.findplaces.ui.PlacesPresenter
 import kotlinx.android.synthetic.main.activity_photos.*
+import android.view.*
+
 
 class PhotosActivity : AppCompatActivity(), PhotoAdapter.OnImageSelectListener, PlacesContract.PhotosView {
 
     lateinit var tag: String
+    lateinit var viewGroup: ViewGroup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photos)
+
+        viewGroup = recyclerView
+
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         tag = if (intent.hasExtra(Intent.EXTRA_TEXT)) intent.getStringExtra(Intent.EXTRA_TEXT) else tag
 
@@ -48,8 +54,25 @@ class PhotosActivity : AppCompatActivity(), PhotoAdapter.OnImageSelectListener, 
 
         progress!!.visibility = View.INVISIBLE
         recyclerView!!.setHasFixedSize(true)
+//
+//        val sGridLayoutManager = StaggeredGridLayoutManager(2,
+//                StaggeredGridLayoutManager.VERTICAL)
+//        recyclerView.layoutManager = sGridLayoutManager
+
         val layoutManager = GridLayoutManager(this, 2)
         recyclerView!!.layoutManager = layoutManager
         recyclerView!!.adapter = photoAdapter
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+
+        val id = item!!.itemId
+
+        if(id == android.R.id.home){
+            super.onBackPressed()
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }
