@@ -10,7 +10,6 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.view.MenuItem
 import android.view.View
-import kotlinx.android.synthetic.main.photo_item.*
 
 
 class FullPhotoActivity : AppCompatActivity() {

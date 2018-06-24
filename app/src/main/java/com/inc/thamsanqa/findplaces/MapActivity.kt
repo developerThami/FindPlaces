@@ -1,9 +1,17 @@
 package com.inc.thamsanqa.findplaces
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.support.v4.app.NotificationManagerCompat
+import android.support.v4.content.ContextCompat
+import android.util.Log
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -18,8 +26,11 @@ import com.inc.thamsanqa.findplaces.ui.PlacesPresenter
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.PlacesView {
 
+
     private lateinit var mMap: GoogleMap
     private lateinit var presenter: PlacesPresenter
+    lateinit var locationManager:LocationManager
+    private val locationRequestCode: Int = 200
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +40,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
         mapFragment.getMapAsync(this)
 
         presenter = PlacesPresenter()
-        presenter.getNearByPlaces(this)
+
+         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            presenter.requestLocationPermission(this)
+        } else {
+            getUserLocation()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -66,5 +85,56 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
         intent.putExtra(Intent.EXTRA_TEXT, tag)
         startActivity(intent)
         return true
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            locationRequestCode ->
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getUserLocation()
+                } else {
+                    presenter.requestLocationPermission(this)
+                }
+        }
+    }
+
+    private var locationListener =
+            object : LocationListener {
+
+                override fun onLocationChanged(location: Location) {
+                    getNearPlaces(location)
+                    switchOffLocationListener()
+                }
+
+                override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
+
+                }
+
+                override fun onProviderEnabled(provider: String) {
+
+                }
+
+                override fun onProviderDisabled(provider: String) {
+
+
+                }
+            }
+
+    private fun switchOffLocationListener() {
+        locationManager.removeUpdates(locationListener)
+    }
+
+    private fun getUserLocation() {
+        presenter.requestUserLocation(this, locationManager ,locationListener)
+    }
+
+    private fun getNearPlaces(location: Location) {
+
+        val latitude = location.latitude
+        val longitude = location.longitude
+
+        val userLocation = String.format("%s,%s", latitude,longitude)
+        presenter.getNearByPlaces("-33.8670522,151.1957362", this)
     }
 }

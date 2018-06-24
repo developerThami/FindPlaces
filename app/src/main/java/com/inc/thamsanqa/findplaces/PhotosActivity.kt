@@ -50,6 +50,8 @@ class PhotosActivity : AppCompatActivity(), PhotoAdapter.OnImageSelectListener, 
             Snackbar.make(recyclerView!!, R.string.no_photos, Snackbar.LENGTH_LONG).show()
         }
 
+        //todo pre-fetch images and load the List<Bitmap>
+
         val photoAdapter = PhotoAdapter(photos, this)
 
         progress!!.visibility = View.INVISIBLE
