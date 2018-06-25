@@ -2,17 +2,18 @@ package com.inc.thamsanqa.findplaces
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 
 import com.inc.thamsanqa.findplaces.model.Photo
 import com.inc.thamsanqa.findplaces.ui.PlacesContract
 import com.inc.thamsanqa.findplaces.ui.PlacesPresenter
 import kotlinx.android.synthetic.main.activity_photos.*
 import android.view.*
-
 
 class PhotosActivity : AppCompatActivity(), PhotoAdapter.OnImageSelectListener, PlacesContract.PhotosView {
 
@@ -50,8 +51,6 @@ class PhotosActivity : AppCompatActivity(), PhotoAdapter.OnImageSelectListener, 
         if (photos.isEmpty()) {
             Snackbar.make(recyclerView!!, R.string.no_photos, Snackbar.LENGTH_LONG).show()
         }
-
-        //todo pre-fetch images and load the List<Bitmap>
 
         val photoAdapter = PhotoAdapter(photos, this)
 

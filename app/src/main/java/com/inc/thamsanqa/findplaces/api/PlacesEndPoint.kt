@@ -40,7 +40,7 @@ class PlacesEndPoint {
             override fun onResponse(call: Call<PhotosResponse>, response: Response<PhotosResponse>) {
                 if (response.isSuccessful) {
 
-                    val photos = response.body()!!.result!!.photos
+                    val photos: List<Photo>? = response.body()!!.result!!.photos
 
                     if (photos != null) {
                         listener.showPhotos(photos)

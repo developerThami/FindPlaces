@@ -49,7 +49,7 @@ class FullPhotoActivity : AppCompatActivity() {
     private fun adjustForOrientation() {
         val currentOrientation = resources.configuration.orientation
         if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE ) {
-            //bitmap = rotateBitmap( bitmap, 90.0f)
+            bitmap = rotateBitmap( bitmap, 90.0f)
             hideSystemUi()
             supportActionBar!!.hide()
         } else {
