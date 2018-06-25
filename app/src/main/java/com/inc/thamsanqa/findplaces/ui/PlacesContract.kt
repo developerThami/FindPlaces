@@ -12,6 +12,7 @@ interface PlacesContract {
         fun requestLocationPermission(context: Context)
         fun getNearByPlaces(key: String, location: String, view: PlacesView)
         fun getPlacePhotos(key: String, placeId: String, view: PhotosView)
+
     }
 
     interface PlacesView {
@@ -20,5 +21,6 @@ interface PlacesContract {
 
     interface PhotosView {
         fun showPhotos(photos: List<Photo>)
+        fun showNoPicsAvailable()
     }
 }

@@ -57,7 +57,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        //mMap.MyLocationEnabled = true
     }
 
     @SuppressLint("MissingPermission")
@@ -153,7 +152,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
         val longitude = location.longitude
 
         val userLocation = String.format("%s,%s", latitude, longitude)
-        Log.d("Location", userLocation)
         presenter.getNearByPlaces(getString(R.string.key) ,userLocation, this)
     }
 

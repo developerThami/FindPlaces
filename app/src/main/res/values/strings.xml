@@ -8,6 +8,7 @@
     <string name="settings">Location Settings</string>
     <string name="cancel">Cancel</string>
 
-    <string name="key"><!--PLACE API KEY HERE--></string>
+    <string name="key">AIzaSyBnk9KVptIvESwmX7bTPHtwIK86MrZSOzY</string>
+    <string name="this_place_has_no_available_photos_apologies_for_the_inconvenience">This place has no available photos , apologies for the inconvenience</string>
 
 </resources>

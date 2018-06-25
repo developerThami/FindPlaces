@@ -16,6 +16,7 @@ import android.view.*
 
 class PhotosActivity : AppCompatActivity(), PhotoAdapter.OnImageSelectListener, PlacesContract.PhotosView {
 
+
     lateinit var tag: String
     lateinit var viewGroup: ViewGroup
 
@@ -60,6 +61,11 @@ class PhotosActivity : AppCompatActivity(), PhotoAdapter.OnImageSelectListener, 
         val layoutManager = GridLayoutManager(this, 2)
         recyclerView!!.layoutManager = layoutManager
         recyclerView!!.adapter = photoAdapter
+    }
+
+    override fun showNoPicsAvailable() {
+        message.visibility = View.VISIBLE
+        progress.visibility = View.INVISIBLE
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

@@ -44,6 +44,8 @@ class PlacesEndPoint {
 
                     if (photos != null) {
                         listener.showPhotos(photos)
+                    }else{
+                        listener.showNoPicsAvailable()
                     }
 
                 } else {
