@@ -25,14 +25,17 @@ import com.inc.thamsanqa.findplaces.ui.PlacesPresenter
 
 import android.provider.Settings
 import android.support.v7.app.AlertDialog
-
+import android.util.Log
+import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.PlacesView {
 
     private lateinit var mMap: GoogleMap
     private lateinit var presenter: PlacesPresenter
-    lateinit var locationManager: LocationManager
     private val locationRequestCode: Int = 200
+    private lateinit var mFusedLocationClient:FusedLocationProviderClient
+    private lateinit var locationCallback:LocationCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +45,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
         mapFragment.getMapAsync(this)
 
         presenter = PlacesPresenter()
-
-        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -55,8 +57,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        //mMap.MyLocationEnabled = true
     }
 
+    @SuppressLint("MissingPermission")
     override fun showPlacesOnMap(places: List<Place>) {
 
         for (place in places) {
@@ -64,6 +68,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
         }
 
         mMap.animateCamera(CameraUpdateFactory.zoomTo(18.0f))
+        mMap.setMyLocationEnabled(true)
     }
 
     private fun plotPlace(place: Place) {
@@ -101,27 +106,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
         }
     }
 
-    private var locationListener =
-            object : LocationListener {
-
-                override fun onLocationChanged(location: Location) {
-                    getNearPlaces(location)
-                    switchOffLocationListener()
-                }
-
-                override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
-
-                }
-
-                override fun onProviderEnabled(provider: String) {
-
-                }
-
-                override fun onProviderDisabled(provider: String) {
-                    showDialog()
-                }
-            }
-
     private fun showDialog() {
         val alertDialog = AlertDialog.Builder(this@MapActivity)
         alertDialog.setTitle(getString(R.string.enable))
@@ -136,13 +120,31 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
     }
 
     private fun switchOffLocationListener() {
-        locationManager.removeUpdates(locationListener)
+        if (mFusedLocationClient != null) {
+            mFusedLocationClient.removeLocationUpdates(locationCallback)
+        }
     }
 
     @SuppressLint("MissingPermission")
     private fun getUserLocation() {
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                20, 0.0f, locationListener)
+
+        val locationRequest = LocationRequest()
+
+        locationRequest.interval = 120000 // two minute interval
+        locationRequest.fastestInterval = 120000
+        locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+
+         locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                for (location in locationResult.locations){
+                    getNearPlaces(location)
+                    switchOffLocationListener()
+                }
+            }
+        }
+        mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+
     }
 
     private fun getNearPlaces(location: Location) {
@@ -151,6 +153,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PlacesContract.Plac
         val longitude = location.longitude
 
         val userLocation = String.format("%s,%s", latitude, longitude)
+        Log.d("Location", userLocation)
         presenter.getNearByPlaces(getString(R.string.key) ,userLocation, this)
     }
+
 }
